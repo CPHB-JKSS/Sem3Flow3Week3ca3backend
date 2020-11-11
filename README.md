@@ -1,5 +1,5 @@
 
-###Travis status [![Build Status](https://travis-ci.org/JoakimKSS/Sem3Week3Flow3CA3.svg?branch=master)](https://travis-ci.org/JoakimKSS/Sem3Week3Flow3CA3.svg?branch=master)
+### Travis status [![Build Status](https://travis-ci.org/JoakimKSS/Sem3Week3Flow3CA3.svg?branch=master)](https://travis-ci.org/JoakimKSS/Sem3Week3Flow3CA3.svg?branch=master)
 
 # Getting Started
 

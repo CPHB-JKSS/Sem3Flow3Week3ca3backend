@@ -11,21 +11,27 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import facades.UserFacade;
+
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import entities.User;
 import errorhandling.API_Exception;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import security.errorhandling.AuthenticationException;
 import errorhandling.GenericExceptionMapper;
+
 import javax.persistence.EntityManagerFactory;
+
 import utils.EMF_Creator;
 
 @Path("login")
@@ -41,20 +47,31 @@ public class LoginEndpoint {
     public Response login(String jsonString) throws AuthenticationException, API_Exception {
         String username;
         String password;
+
         try {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
             username = json.get("username").getAsString();
             password = json.get("password").getAsString();
         } catch (Exception e) {
-           throw new API_Exception("Malformed JSON Suplied",400,e);
+            throw new API_Exception("Malformed JSON Suplied", 400, e);
         }
 
         try {
             User user = USER_FACADE.getVeryfiedUser(username, password);
+
+            StringBuilder res = new StringBuilder();
+            for (String string : user.getRolesAsStrings()) {
+                res.append(string);
+                res.append(",");
+            }
+            String roles = res.length() > 0 ? res.substring(0, res.length() - 1) : "";
+
             String token = createToken(username, user.getRolesAsStrings());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", username);
             responseJson.addProperty("token", token);
+            responseJson.addProperty("roles", roles);
+
             return Response.ok(new Gson().toJson(responseJson)).build();
 
         } catch (JOSEException | AuthenticationException ex) {
